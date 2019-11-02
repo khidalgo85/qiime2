@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>
+        Analysis fungal ITS amplicon from illumina sequencing by qiime2 - HackMD
+    </title>
+    <link rel="icon" type="image/png" href="https://hackmd.io/favicon.png">
+    <link rel="apple-touch-icon" href="https://hackmd.io/apple-touch-icon.png">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css" integrity="sha256-3iu9jgsy9TpTwXKb7bNQzqWekRX7pPK+2OLj3R922fo=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/octicons/3.5.0/octicons.min.css" integrity="sha256-QiWfLIsCT02Sdwkogf6YMiQlj4NE84MKkzEMkZnMGdg=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.5.1/themes/prism.min.css" integrity="sha256-vtR0hSWRc3Tb26iuN2oZHt3KRUomwTufNIf5/4oeCyg=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/emojify.js/1.1.0/css/basic/emojify.min.css" integrity="sha256-UOrvMOsSDSrW6szVLe8ZDZezBxh5IoIfgTwdNDgTjiU=" crossorigin="anonymous" />
+    <style>
+        @charset "UTF-8";@import url(https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,500,500i|Source+Code+Pro:300,400,500|Source+Sans+Pro:300,300i,400,400i,600,600i|Source+Serif+Pro&subset=latin-ext);.hljs{display:block;background:#fff;padding:.5em;color:#333;overflow-x:auto}.hljs-comment,.hljs-meta{color:#969896}.hljs-emphasis,.hljs-quote,.hljs-string,.hljs-strong,.hljs-template-variable,.hljs-variable{color:#df5000}.hljs-keyword,.hljs-selector-tag,.hljs-type{color:#a71d5d}.hljs-attribute,.hljs-bullet,.hljs-literal,.hljs-number,.hljs-symbol{color:#0086b3}.hljs-built_in,.hljs-builtin-name{color:#005cc5}.hljs-name,.hljs-section{color:#63a35c}.hljs-tag{color:#333}.hljs-attr,.hljs-selector-attr,.hljs-selector-class,.hljs-selector-id,.hljs-selector-pseudo,.hljs-title{color:#795da3}.hljs-addition{color:#55a532;background-color:#eaffea}.hljs-deletion{color:#bd2c00;background-color:#ffecec}.hljs-link{text-decoration:underline}.markdown-body{font-size:16px;line-height:1.5;word-wrap:break-word}.markdown-body:after,.markdown-body:before{display:table;content:""}.markdown-body:after{clear:both}.markdown-body>:first-child{margin-top:0!important}.markdown-body>:last-child{margin-bottom:0!important}.markdown-body a:not([href]){color:inherit;text-decoration:none}.markdown-body .absent{color:#c00}.markdown-body .anchor{float:left;padding-right:4px;margin-left:-20px;line-height:1}.markdown-body .anchor:focus{outline:none}.markdown-body blockquote,.markdown-body dl,.markdown-body ol,.markdown-body p,.markdown-body pre,.markdown-body table,.markdown-body ul{margin-top:0;margin-bottom:16px}.markdown-body hr{height:.25em;padding:0;margin:24px 0;background-color:#e7e7e7;border:0}.markdown-body blockquote{font-size:16px;padding:0 1em;color:#777;border-left:.25em solid #ddd}.markdown-body blockquote>:first-child{margin-top:0}.markdown-body blockquote>:last-child{margin-bottom:0}.markdown-body kbd,.popover kbd{display:inline-block;padding:3px 5px;font-size:11px;line-height:10px;color:#555;vertical-align:middle;background-color:#fcfcfc;border:1px solid #ccc;border-bottom-color:#bbb;border-radius:3px;box-shadow:inset 0 -1px 0 #bbb}.markdown-body .loweralpha{list-style-type:lower-alpha}.markdown-body h1,.markdown-body h2,.markdown-body h3,.markdown-body h4,.markdown-body h5,.markdown-body h6{margin-top:24px;margin-bottom:16px;font-weight:600;line-height:1.25}.markdown-body h1 .octicon-link,.markdown-body h2 .octicon-link,.markdown-body h3 .octicon-link,.markdown-body h4 .octicon-link,.markdown-body h5 .octicon-link,.markdown-body h6 .octicon-link{color:#000;vertical-align:middle;visibility:hidden}.markdown-body h1:hover .anchor,.markdown-body h2:hover .anchor,.markdown-body h3:hover .anchor,.markdown-body h4:hover .anchor,.markdown-body h5:hover .anchor,.markdown-body h6:hover .anchor{text-decoration:none}.markdown-body h1:hover .anchor .octicon-link,.markdown-body h2:hover .anchor .octicon-link,.markdown-body h3:hover .anchor .octicon-link,.markdown-body h4:hover .anchor .octicon-link,.markdown-body h5:hover .anchor .octicon-link,.markdown-body h6:hover .anchor .octicon-link{visibility:visible}.markdown-body h1 code,.markdown-body h1 tt,.markdown-body h2 code,.markdown-body h2 tt,.markdown-body h3 code,.markdown-body h3 tt,.markdown-body h4 code,.markdown-body h4 tt,.markdown-body h5 code,.markdown-body h5 tt,.markdown-body h6 code,.markdown-body h6 tt{font-size:inherit}.markdown-body h1{font-size:2em}.markdown-body h1,.markdown-body h2{padding-bottom:.3em;border-bottom:1px solid #eee}.markdown-body h2{font-size:1.5em}.markdown-body h3{font-size:1.25em}.markdown-body h4{font-size:1em}.markdown-body h5{font-size:.875em}.markdown-body h6{font-size:.85em;color:#777}.markdown-body ol,.markdown-body ul{padding-left:2em}.markdown-body ol.no-list,.markdown-body ul.no-list{padding:0;list-style-type:none}.markdown-body ol ol,.markdown-body ol ul,.markdown-body ul ol,.markdown-body ul ul{margin-top:0;margin-bottom:0}.markdown-body li>p{margin-top:16px}.markdown-body li+li{margin-top:.25em}.markdown-body dl{padding:0}.markdown-body dl dt{padding:0;margin-top:16px;font-size:1em;font-style:italic;font-weight:700}.markdown-body dl dd{padding:0 16px;margin-bottom:16px}.markdown-body table{display:block;width:100%;overflow:auto;word-break:normal;word-break:keep-all}.markdown-body table th{font-weight:700}.markdown-body table td,.markdown-body table th{padding:6px 13px;border:1px solid #ddd}.markdown-body table tr{background-color:#fff;border-top:1px solid #ccc}.markdown-body table tr:nth-child(2n){background-color:#f8f8f8}.markdown-body img{max-width:100%;box-sizing:content-box;background-color:#fff}.markdown-body img[align=right]{padding-left:20px}.markdown-body img[align=left]{padding-right:20px}.markdown-body .emoji{max-width:none;vertical-align:text-top;background-color:transparent}.markdown-body span.frame{display:block;overflow:hidden}.markdown-body span.frame>span{display:block;float:left;width:auto;padding:7px;margin:13px 0 0;overflow:hidden;border:1px solid #ddd}.markdown-body span.frame span img{display:block;float:left}.markdown-body span.frame span span{display:block;padding:5px 0 0;clear:both;color:#333}.markdown-body span.align-center{display:block;overflow:hidden;clear:both}.markdown-body span.align-center>span{display:block;margin:13px auto 0;overflow:hidden;text-align:center}.markdown-body span.align-center span img{margin:0 auto;text-align:center}.markdown-body span.align-right{display:block;overflow:hidden;clear:both}.markdown-body span.align-right>span{display:block;margin:13px 0 0;overflow:hidden;text-align:right}.markdown-body span.align-right span img{margin:0;text-align:right}.markdown-body span.float-left{display:block;float:left;margin-right:13px;overflow:hidden}.markdown-body span.float-left span{margin:13px 0 0}.markdown-body span.float-right{display:block;float:right;margin-left:13px;overflow:hidden}.markdown-body span.float-right>span{display:block;margin:13px auto 0;overflow:hidden;text-align:right}.markdown-body code,.markdown-body tt{padding:0;padding-top:.2em;padding-bottom:.2em;margin:0;font-size:85%;background-color:rgba(0,0,0,.04);border-radius:3px}.markdown-body code:after,.markdown-body code:before,.markdown-body tt:after,.markdown-body tt:before{letter-spacing:-.2em;content:"\00a0"}.markdown-body code br,.markdown-body tt br{display:none}.markdown-body del code{text-decoration:inherit}.markdown-body pre{word-wrap:normal}.markdown-body pre>code{padding:0;margin:0;font-size:100%;word-break:normal;white-space:pre;background:transparent;border:0}.markdown-body .highlight{margin-bottom:16px}.markdown-body .highlight pre{margin-bottom:0;word-break:normal}.markdown-body .highlight pre,.markdown-body pre{padding:16px;overflow:auto;font-size:85%;line-height:1.45;background-color:#f7f7f7;border-radius:3px}.markdown-body pre code,.markdown-body pre tt{display:inline;max-width:auto;padding:0;margin:0;overflow:visible;line-height:inherit;word-wrap:normal;background-color:transparent;border:0}.markdown-body pre code:after,.markdown-body pre code:before,.markdown-body pre tt:after,.markdown-body pre tt:before{content:normal}.markdown-body .csv-data td,.markdown-body .csv-data th{padding:5px;overflow:hidden;font-size:12px;line-height:1;text-align:left;white-space:nowrap}.markdown-body .csv-data .blob-line-num{padding:10px 8px 9px;text-align:right;background:#fff;border:0}.markdown-body .csv-data tr{border-top:0}.markdown-body .csv-data th{font-weight:700;background:#f8f8f8;border-top:0}.news .alert .markdown-body blockquote{padding:0 0 0 40px;border:0 none}.activity-tab .news .alert .commits,.activity-tab .news .markdown-body blockquote{padding-left:0}.task-list-item{list-style-type:none}.task-list-item label{font-weight:400}.task-list-item.enabled label{cursor:pointer}.task-list-item+.task-list-item{margin-top:3px}.task-list-item-checkbox{float:left;margin:.31em 0 .2em -1.3em!important;vertical-align:middle;cursor:default!important}.markdown-body{padding-top:40px;padding-bottom:40px;max-width:758px;overflow:visible!important}.markdown-body .emoji{vertical-align:top}.markdown-body pre{border:inherit!important}.markdown-body code{color:inherit!important}.markdown-body pre code .wrapper{display:-moz-inline-flex;display:-ms-inline-flex;display:-o-inline-flex;display:inline-flex}.markdown-body pre code .gutter{float:left;overflow:hidden;-webkit-user-select:none;user-select:none}.markdown-body pre code .gutter.linenumber{text-align:right;position:relative;display:inline-block;cursor:default;z-index:4;padding:0 8px 0 0;min-width:20px;box-sizing:content-box;color:#afafaf!important;border-right:3px solid #6ce26c!important}.markdown-body pre code .gutter.linenumber>span:before{content:attr(data-linenumber)}.markdown-body pre code .code{float:left;margin:0 0 0 16px}.markdown-body .gist .line-numbers{border-left:none;border-top:none;border-bottom:none}.markdown-body .gist .line-data{border:none}.markdown-body .gist table{border-spacing:0;border-collapse:inherit!important}.markdown-body code[data-gist-id]{background:none;padding:0}.markdown-body code[data-gist-id]:after,.markdown-body code[data-gist-id]:before{content:""}.markdown-body code[data-gist-id] .blob-num{border:unset}.markdown-body code[data-gist-id] table{overflow:unset;margin-bottom:unset}.markdown-body code[data-gist-id] table tr{background:unset}.markdown-body[dir=rtl] pre{direction:ltr}.markdown-body[dir=rtl] code{direction:ltr;unicode-bidi:embed}.markdown-body .alert>p{margin-bottom:0}.markdown-body pre.abc,.markdown-body pre.flow-chart,.markdown-body pre.graphviz,.markdown-body pre.mermaid,.markdown-body pre.sequence-diagram{text-align:center;background-color:inherit;border-radius:0;white-space:inherit}.markdown-body pre.abc>code,.markdown-body pre.flow-chart>code,.markdown-body pre.graphviz>code,.markdown-body pre.mermaid>code,.markdown-body pre.sequence-diagram>code{text-align:left}.markdown-body pre.abc>svg,.markdown-body pre.flow-chart>svg,.markdown-body pre.graphviz>svg,.markdown-body pre.mermaid>svg,.markdown-body pre.sequence-diagram>svg{max-width:100%;height:100%}.markdown-body pre>code.wrap{white-space:pre-wrap;white-space:-moz-pre-wrap;white-space:-pre-wrap;white-space:-o-pre-wrap;word-wrap:break-word}.markdown-body .alert>p,.markdown-body .alert>ul{margin-bottom:0}.markdown-body summary{display:list-item}.markdown-body summary:focus{outline:none}.markdown-body details summary{cursor:pointer}.markdown-body details:not([open])>:not(summary){display:none}.markdown-body figure{margin:1em 40px}.markdown-body .mark,.markdown-body mark{background-color:#fff1a7}.vimeo,.youtube{cursor:pointer;display:table;text-align:center;background-position:50%;background-repeat:no-repeat;background-size:contain;background-color:#000;overflow:hidden}.vimeo,.youtube{position:relative;width:100%}.youtube{padding-bottom:56.25%}.vimeo img{width:100%;object-fit:contain;z-index:0}.youtube img{object-fit:cover;z-index:0}.vimeo iframe,.youtube iframe,.youtube img{width:100%;height:100%;position:absolute;top:0;left:0}.vimeo iframe,.youtube iframe{vertical-align:middle;z-index:1}.vimeo .icon,.youtube .icon{position:absolute;height:auto;width:auto;top:50%;left:50%;transform:translate(-50%,-50%);color:#fff;opacity:.3;transition:opacity .2s;z-index:0}.vimeo:hover .icon,.youtube:hover .icon{opacity:.6;transition:opacity .2s}.slideshare .inner,.speakerdeck .inner{position:relative;width:100%}.slideshare .inner iframe,.speakerdeck .inner iframe{position:absolute;top:0;bottom:0;left:0;right:0;width:100%;height:100%}.MJX_Assistive_MathML{display:none}.ui-infobar{position:relative;z-index:2;max-width:760px;margin:25px auto -25px;padding:0 15px;color:#777}.toc .invisable-node{list-style-type:none}.ui-toc{position:fixed;bottom:20px;z-index:998}.ui-toc-label{opacity:.3;background-color:#ccc;border:none;transition:opacity .2s}.ui-toc .open .ui-toc-label{opacity:1;color:#fff;transition:opacity .2s}.ui-toc-label:focus{opacity:.3;background-color:#ccc;color:#000}.ui-toc-label:hover{opacity:1;background-color:#ccc;transition:opacity .2s}.ui-toc-dropdown{margin-top:23px;margin-bottom:20px;padding-left:10px;padding-right:10px;max-width:45vw;width:25vw;max-height:70vh;overflow:auto;text-align:inherit}.ui-toc-dropdown>.toc{max-height:calc(70vh - 100px);overflow:auto}.ui-toc-dropdown[dir=rtl] .nav{padding-right:0;letter-spacing:.0029em}.ui-toc-dropdown a{overflow:hidden;text-overflow:ellipsis;white-space:pre}.ui-toc-dropdown .nav>li>a{display:block;padding:4px 20px;font-size:13px;font-weight:500;color:#767676}.ui-toc-dropdown .nav>li:first-child:last-child > ul,.ui-toc-dropdown .toc.expand ul{display:block}.ui-toc-dropdown .nav>li>a:focus,.ui-toc-dropdown .nav>li>a:hover{padding-left:19px;color:#000;text-decoration:none;background-color:transparent;border-left:1px solid #000}.ui-toc-dropdown[dir=rtl] .nav>li>a:focus,.ui-toc-dropdown[dir=rtl] .nav>li>a:hover{padding-right:19px;border-left:none;border-right:1px solid #000}.ui-toc-dropdown .nav>.active:focus>a,.ui-toc-dropdown .nav>.active:hover>a,.ui-toc-dropdown .nav>.active>a{padding-left:18px;font-weight:700;color:#000;background-color:transparent;border-left:2px solid #000}.ui-toc-dropdown[dir=rtl] .nav>.active:focus>a,.ui-toc-dropdown[dir=rtl] .nav>.active:hover>a,.ui-toc-dropdown[dir=rtl] .nav>.active>a{padding-right:18px;border-left:none;border-right:2px solid #000}.ui-toc-dropdown .nav .nav{display:none;padding-bottom:10px}.ui-toc-dropdown .nav>.active>ul{display:block}.ui-toc-dropdown .nav .nav>li>a{padding-top:1px;padding-bottom:1px;padding-left:30px;font-size:12px;font-weight:400}.ui-toc-dropdown[dir=rtl] .nav .nav>li>a{padding-right:30px}.ui-toc-dropdown .nav .nav>li>ul>li>a{padding-top:1px;padding-bottom:1px;padding-left:40px;font-size:12px;font-weight:400}.ui-toc-dropdown[dir=rtl] .nav .nav>li>ul>li>a{padding-right:40px}.ui-toc-dropdown .nav .nav>li>a:focus,.ui-toc-dropdown .nav .nav>li>a:hover{padding-left:29px}.ui-toc-dropdown[dir=rtl] .nav .nav>li>a:focus,.ui-toc-dropdown[dir=rtl] .nav .nav>li>a:hover{padding-right:29px}.ui-toc-dropdown .nav .nav>li>ul>li>a:focus,.ui-toc-dropdown .nav .nav>li>ul>li>a:hover{padding-left:39px}.ui-toc-dropdown[dir=rtl] .nav .nav>li>ul>li>a:focus,.ui-toc-dropdown[dir=rtl] .nav .nav>li>ul>li>a:hover{padding-right:39px}.ui-toc-dropdown .nav .nav>.active:focus>a,.ui-toc-dropdown .nav .nav>.active:hover>a,.ui-toc-dropdown .nav .nav>.active>a{padding-left:28px;font-weight:500}.ui-toc-dropdown[dir=rtl] .nav .nav>.active:focus>a,.ui-toc-dropdown[dir=rtl] .nav .nav>.active:hover>a,.ui-toc-dropdown[dir=rtl] .nav .nav>.active>a{padding-right:28px}.ui-toc-dropdown .nav .nav>.active>.nav>.active:focus>a,.ui-toc-dropdown .nav .nav>.active>.nav>.active:hover>a,.ui-toc-dropdown .nav .nav>.active>.nav>.active>a{padding-left:38px;font-weight:500}.ui-toc-dropdown[dir=rtl] .nav .nav>.active>.nav>.active:focus>a,.ui-toc-dropdown[dir=rtl] .nav .nav>.active>.nav>.active:hover>a,.ui-toc-dropdown[dir=rtl] .nav .nav>.active>.nav>.active>a{padding-right:38px}.markdown-body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Helvetica,Roboto,Arial,sans-serif}html[lang^=ja] .markdown-body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Helvetica,Roboto,Arial,Hiragino Kaku Gothic Pro,ヒラギノ角ゴ Pro W3,Osaka,Meiryo,メイリオ,MS Gothic,ＭＳ\ ゴシック,sans-serif}html[lang=zh-tw] .markdown-body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Helvetica,Roboto,Arial,PingFang TC,Microsoft JhengHei,微軟正黑,sans-serif}html[lang=zh-cn] .markdown-body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Helvetica,Roboto,Arial,PingFang SC,Microsoft YaHei,微软雅黑,sans-serif}html .markdown-body[lang^=ja]{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Helvetica,Roboto,Arial,Hiragino Kaku Gothic Pro,ヒラギノ角ゴ Pro W3,Osaka,Meiryo,メイリオ,MS Gothic,ＭＳ\ ゴシック,sans-serif}html .markdown-body[lang=zh-tw]{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Helvetica,Roboto,Arial,PingFang TC,Microsoft JhengHei,微軟正黑,sans-serif}html .markdown-body[lang=zh-cn]{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica Neue,Helvetica,Roboto,Arial,PingFang SC,Microsoft YaHei,微软雅黑,sans-serif}html[lang^=ja] .ui-toc-dropdown{font-family:Source Sans Pro,Helvetica,Arial,Meiryo UI,MS PGothic,ＭＳ\ Ｐゴシック,sans-serif}html[lang=zh-tw] .ui-toc-dropdown{font-family:Source Sans Pro,Helvetica,Arial,Microsoft JhengHei UI,微軟正黑UI,sans-serif}html[lang=zh-cn] .ui-toc-dropdown{font-family:Source Sans Pro,Helvetica,Arial,Microsoft YaHei UI,微软雅黑UI,sans-serif}html .ui-toc-dropdown[lang^=ja]{font-family:Source Sans Pro,Helvetica,Arial,Meiryo UI,MS PGothic,ＭＳ\ Ｐゴシック,sans-serif}html .ui-toc-dropdown[lang=zh-tw]{font-family:Source Sans Pro,Helvetica,Arial,Microsoft JhengHei UI,微軟正黑UI,sans-serif}html .ui-toc-dropdown[lang=zh-cn]{font-family:Source Sans Pro,Helvetica,Arial,Microsoft YaHei UI,微软雅黑UI,sans-serif}.ui-affix-toc{position:fixed;top:0;max-width:15vw;max-height:70vh;overflow:auto}.back-to-top,.expand-toggle,.go-to-bottom{display:block;padding:4px 10px;margin-top:10px;margin-left:10px;font-size:12px;font-weight:500;color:#999}.back-to-top:focus,.back-to-top:hover,.expand-toggle:focus,.expand-toggle:hover,.go-to-bottom:focus,.go-to-bottom:hover{color:#563d7c;text-decoration:none}.back-to-top,.go-to-bottom{margin-top:0}.ui-user-icon{width:20px;height:20px;display:block;border-radius:3px;margin-top:2px;margin-bottom:2px;margin-right:5px;background-position:50%;background-repeat:no-repeat;background-size:cover}.ui-user-icon.small{width:18px;height:18px;display:inline-block;vertical-align:middle;margin:0 0 .2em}.ui-infobar>small>span{line-height:22px}.ui-infobar>small .dropdown{display:inline-block}.ui-infobar>small .dropdown a:focus,.ui-infobar>small .dropdown a:hover{text-decoration:none}.ui-published-note{color:#337ab7}.ui-published-note .fa{font-size:20px;vertical-align:top}.unselectable{-webkit-user-select:none;-o-user-select:none;user-select:none}@media print{blockquote,div,img,pre,table{page-break-inside:avoid!important}a[href]:after{font-size:12px!important}}.markdown-body.slides{position:relative;z-index:1;color:#222}.markdown-body.slides:before{content:"";display:block;position:absolute;top:0;left:0;right:0;bottom:0;z-index:-1;background-color:currentColor;box-shadow:0 0 0 50vw}.markdown-body.slides section[data-markdown]{position:relative;margin-bottom:1.5em;background-color:#fff;text-align:center}.markdown-body.slides section[data-markdown] code{text-align:left}.markdown-body.slides section[data-markdown]:before{content:"";display:block;padding-bottom:56.23%}.markdown-body.slides section[data-markdown]>div:first-child{position:absolute;top:50%;left:1em;right:1em;transform:translateY(-50%);max-height:100%;overflow:hidden}.markdown-body.slides section[data-markdown]>ul{display:inline-block}.markdown-body.slides>section>section+section:after{content:"";position:absolute;top:-1.5em;right:1em;height:1.5em;border:3px solid #777}body{font-smoothing:subpixel-antialiased!important;-webkit-font-smoothing:subpixel-antialiased!important;-moz-osx-font-smoothing:auto!important;text-shadow:0 0 1em transparent,1px 1px 1.2px rgba(0,0,0,.004);-webkit-overflow-scrolling:touch;letter-spacing:.025em}.focus,:focus{outline:none!important}::-moz-focus-inner{border:0!important}body{font-family:Source Sans Pro,Helvetica,Arial,sans-serif}html[lang^=ja] body{font-family:Source Sans Pro,Helvetica,Arial,Hiragino Kaku Gothic Pro,ヒラギノ角ゴ Pro W3,Osaka,Meiryo,メイリオ,MS Gothic,ＭＳ\ ゴシック,sans-serif}html[lang=zh-tw] body{font-family:Source Sans Pro,Helvetica,Arial,PingFang TC,Microsoft JhengHei,微軟正黑,sans-serif}html[lang=zh-cn] body{font-family:Source Sans Pro,Helvetica,Arial,PingFang SC,Microsoft YaHei,微软雅黑,sans-serif}abbr[title]{border-bottom:none;text-decoration:underline;-webkit-text-decoration:underline dotted;text-decoration:underline dotted}abbr[data-original-title],abbr[title]{cursor:help}body.modal-open{overflow-y:auto;padding-right:0!important}
+    </style>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    	<script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js" integrity="sha256-3Jy/GbSLrg0o9y5Z5n1uw0qxZECH7C6OQpVBgNFYa0g=" crossorigin="anonymous"></script>
+    	<script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.min.js" integrity="sha256-g6iAfvZp+nDQ2TdTR/VVKJf3bGro4ub5fvWSWVRi2NE=" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.9/es5-shim.min.js" integrity="sha256-8E4Is26QH0bD52WoQpcB+R/tcWQtpzlCojrybUd7Mxo=" crossorigin="anonymous"></script>
+    <![endif]-->
+</head>
+
+<body>
+    <div id="doc" class="markdown-body container-fluid comment-enabled" data-hard-breaks="false" style="position: relative;"><h1 id="Analysis-fungal-ITS-amplicon-from-illumina-sequencing-by-qiime2"><a class="anchor hidden-xs" href="#Analysis-fungal-ITS-amplicon-from-illumina-sequencing-by-qiime2" title="Analysis-fungal-ITS-amplicon-from-illumina-sequencing-by-qiime2"><span class="octicon octicon-link"></span></a>Analysis fungal ITS amplicon from illumina sequencing by qiime2</h1><p>MSc. Kelly J. Hidalgo Martinez</p><p>Microbiologist</p><p>Ph.D. student in Genetics and Molecular Biology</p><p>Division of Microbial Resources</p><p>Research Center for Agriculture, Biology and Chemical</p><p>University of Campinas</p><p>Brazil</p><p>Phone: +55 19 98172 1510</p><hr><h3 id="Requirements"><a class="anchor hidden-xs" href="#Requirements" title="Requirements"><span class="octicon octicon-link"></span></a>Requirements</h3><ol>
+<li>Putty <a href="https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html" target="_blank" rel="noopener">for windows users</a></li>
+<li><a href="https://docs.qiime2.org/2019.4/" target="_blank" rel="noopener"> Qiime2 </a> installing via conda qiime2-2019.4</li>
+<li>FASTQC - installing via conda bioinfo environment</li>
+<li>Trimmomatic - installing via conda bioinfo environment <a href="http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/TrimmomaticManual_V0.32.pdf" target="_blank" rel="noopener">manual</a></li>
+<li>Filezilla <a href="https://filezilla-project.org/download.php?platform=win64" target="_blank" rel="noopener">windows users</a> / <a href="https://filezilla-project.org/download.php" target="_blank" rel="noopener">linux users</a>
+<img src="https://i.imgur.com/ROGltvY.jpg" alt=""></li>
+</ol><h2 id="Importants-tips-vefore-you-start"><a class="anchor hidden-xs" href="#Importants-tips-vefore-you-start" title="Importants-tips-vefore-you-start"><span class="octicon octicon-link"></span></a>Importants tips vefore you start</h2><ol>
+<li>When typing a fila name or directory path, you can use <strong>tab completion</strong></li>
+<li>Press <strong>up arrow</strong> to get back previous commands you typed</li>
+<li>Do not stored commands in a word processing program</li>
+<li>Shell commands are <strong>case-sensitive</strong></li>
+<li>Every command has a <strong>help</strong> menu. (qiime --help, qiime, qiime dada2 --help, qiime dada2 denoise-paired --help)</li>
+</ol><h3 id="1-Join-the-server"><a class="anchor hidden-xs" href="#1-Join-the-server" title="1-Join-the-server"><span class="octicon octicon-link"></span></a>1. Join the server</h3><pre><code class="coffeescript hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span>
+<span data-linenumber="2"></span>
+<span data-linenumber="3"></span>
+<span data-linenumber="4"></span>
+<span data-linenumber="5"></span>
+<span data-linenumber="6"></span>
+<span data-linenumber="7"></span>
+<span data-linenumber="8"></span></div><div class="code"><span class="hljs-comment">## Server IP address (IP address for Host box and bioinfor for Username box in filezilla)</span>
+ssh -x bioinfo@<span class="hljs-number">143.106</span><span class="hljs-number">.82</span><span class="hljs-number">.118</span>
+<span class="hljs-comment">## Password (In filezilla for the password box. Port box 22)</span>
+bioinfo@<span class="hljs-number">15</span>
+<span class="hljs-comment">## As root</span>
+su root
+<span class="hljs-comment">## Root password</span>
+<span class="hljs-number">20141117</span>
+</div></div></code></pre><h3 id="2-Working-Directory"><a class="anchor hidden-xs" href="#2-Working-Directory" title="2-Working-Directory"><span class="octicon octicon-link"></span></a>2. Working Directory</h3><pre><code class="coffeescript hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span>
+<span data-linenumber="2"></span>
+<span data-linenumber="3"></span>
+<span data-linenumber="4"></span>
+<span data-linenumber="5"></span>
+<span data-linenumber="6"></span></div><div class="code"><span class="hljs-comment">## Change directory</span>
+cd <span class="hljs-regexp">/data/treinamento/its/</span>
+<span class="hljs-comment">## Make new directory for the raw data</span>
+mkdir <span class="hljs-number">00.</span>RawData
+<span class="hljs-comment">## Change directory</span>
+cd <span class="hljs-number">00.</span>RawData/
+</div></div></code></pre><p>Put the samples in the 00.RawData directory</p><p><em><strong>Download the dataset</strong></em> (Note if you have your own samples, it’s not necessary)</p><pre><code class="coffeescript hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span>
+<span data-linenumber="2"></span>
+<span data-linenumber="3"></span>
+<span data-linenumber="4"></span>
+<span data-linenumber="5"></span>
+<span data-linenumber="6"></span>
+<span data-linenumber="7"></span>
+<span data-linenumber="8"></span></div><div class="code"><span class="hljs-comment">## sample 1 Forward</span>
+wget https:<span class="hljs-regexp">//gi</span>thub.com/USDA-ARS-GBRU/itsxpress-tutorial/raw/master/data/sample1_r1.fq.gz
+<span class="hljs-comment">## sample 1 Reverse</span>
+wget https:<span class="hljs-regexp">//gi</span>thub.com/USDA-ARS-GBRU/itsxpress-tutorial/raw/master/data/sample1_r2.fq.gz
+<span class="hljs-comment">## sample 2 Forward</span>
+wget https:<span class="hljs-regexp">//gi</span>thub.com/USDA-ARS-GBRU/itsxpress-tutorial/raw/master/data/sample2_r1.fq.gz
+<span class="hljs-comment">## sample 2 Reverse</span>
+wget https:<span class="hljs-regexp">//gi</span>thub.com/USDA-ARS-GBRU/itsxpress-tutorial/raw/master/data/sample2_r2.fq.gz
+</div></div></code></pre><hr><h2 id="First-option-Quality-control-with-Fastqc-and-trimming-with-Trimmomatic-out-of-Qiime20"><a class="anchor hidden-xs" href="#First-option-Quality-control-with-Fastqc-and-trimming-with-Trimmomatic-out-of-Qiime20" title="First-option-Quality-control-with-Fastqc-and-trimming-with-Trimmomatic-out-of-Qiime20"><span class="octicon octicon-link"></span></a><em>First option: Quality control with Fastqc and trimming with Trimmomatic (out of Qiime2)</em></h2><hr><h3 id="3A-Trim-primers-with-cutadapt"><a class="anchor hidden-xs" href="#3A-Trim-primers-with-cutadapt" title="3A-Trim-primers-with-cutadapt"><span class="octicon octicon-link"></span></a>3A. Trim primers with cutadapt</h3><p>The cutadapt is installed in qiime2-2019.4 virtual environment.</p><p>The cutadapt screen out reads that do not begin with primer sequences and remove primer sequence from reads.</p><pre><code class="coffeescript hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span>
+<span data-linenumber="2"></span>
+<span data-linenumber="3"></span>
+<span data-linenumber="4"></span></div><div class="code"><span class="hljs-comment">## o activate the virtual enviroment</span>
+conda activate qiime2<span class="hljs-number">-2019.4</span>
+<span class="hljs-comment">## Make new directory for the samples without primers</span>
+mkdir <span class="hljs-number">01.</span>PrimersTrim
+</div></div></code></pre><p>The below primers correspond to the fungal ITS2 region</p><p>-g GCATCGATGAAGAACGCAGC <br>
+-G TCCTCCGCTTATTGATATGC \</p><p>You have to run the next command for each sample</p><pre><code class="coffeescript hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span>
+<span data-linenumber="2"></span>
+<span data-linenumber="3"></span>
+<span data-linenumber="4"></span>
+<span data-linenumber="5"></span>
+<span data-linenumber="6"></span>
+<span data-linenumber="7"></span>
+<span data-linenumber="8"></span>
+<span data-linenumber="9"></span>
+<span data-linenumber="10"></span>
+<span data-linenumber="11"></span>
+<span data-linenumber="12"></span></div><div class="code">parallel --link --jobs <span class="hljs-number">4</span> \
+  <span class="hljs-string">'cutadapt \
+    --pair-filter any \
+    --no-indels \
+    --discard-untrimmed \
+    -g GCATCGATGAAGAACGCAGC \
+    -G TCCTCCGCTTATTGATATGC \
+    -o 01.PrimersTrim/sample1_r1.fq.gz \
+    -p 01.PrimersTrim/sample1_r2.fq.gz \
+    {1} {2} \
+    &gt; 01.PrimersTrim/sample1_cutadapt_log.txt'</span> \
+  ::: <span class="hljs-number">00.</span>RawData/sample1_r1.fq.gz ::: <span class="hljs-number">00.</span>RawData/sample2_r2.fq.gz
+</div></div></code></pre><p>Download microbiome_helper package</p><pre><code class="coffeescript hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span></div><div class="code">git clone https:<span class="hljs-regexp">//gi</span>thub.com/LangilleLab/microbiome_helper.git
+</div></div></code></pre><p>Create a log.txt file only with all the sequences that passed after the primer trimming, with a script of microbiome_helper.</p><pre><code class="coffeescript hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span>
+<span data-linenumber="2"></span>
+<span data-linenumber="3"></span>
+<span data-linenumber="4"></span>
+<span data-linenumber="5"></span></div><div class="code">microbiome_helper/parse_cutadapt_logs.py -i 01.PrimersTrim/*log.txt
+## See the txt file
+nano cutadapt_log.txt
+## Erase all intermediate arquives
+rm 01.PrimersTrim/*_log.txt
+</div></div></code></pre><p>Create a .xlsx (excel) file for control the number the reads in each step</p><table>
+<thead>
+<tr>
+<th>SampleID</th>
+<th>Raw_reads</th>
+<th>Length</th>
+<th>Post_trim_primers</th>
+<th>Diference</th>
+<th>Post-trim</th>
+<th>Diference</th>
+<th>itsXpress</th>
+<th>Difference</th>
+<th>% Lost</th>
+<th>Denoised</th>
+<th>Difference</th>
+<th>Merged</th>
+<th>non-chimeric</th>
+<th>Difference</th>
+<th>Final difference</th>
+<th>Final % lost</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table><p>Like this! (<em>summary_stats.xlsx</em> This template is the working material)
+<img src="https://i.imgur.com/FswMySN.jpg" alt="TruncLef"></p><h3 id="4A-Inspect-read-quality"><a class="anchor hidden-xs" href="#4A-Inspect-read-quality" title="4A-Inspect-read-quality"><span class="octicon octicon-link"></span></a>4A. Inspect read quality</h3><pre><code class="coffeescript hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span>
+<span data-linenumber="2"></span>
+<span data-linenumber="3"></span>
+<span data-linenumber="4"></span>
+<span data-linenumber="5"></span>
+<span data-linenumber="6"></span>
+<span data-linenumber="7"></span>
+<span data-linenumber="8"></span></div><div class="code">## Make new directory for the quality reports
+mkdir 02.FastqcReports
+## Fastqc is installed in the bioinfo virtual enviroment. Activate!
+conda activate bioinfo
+## Run fastqc
+fastqc -t 10 01.PrimersTrim/* -o 02.FastqcReports/
+## Make one report with all the samples
+multiqc 02.FastqcReports/* -o 02.FastqcReports/
+</div></div></code></pre><p>Review output from multiqc <code>multiqc_report.html</code> in the <code>02.FastqcReports/</code> with the quality information. Download from Filezilla. You can view this report in a web-browser. The most important is the per-base quality it must be Q&gt;30.</p><h3 id="5A-Filter-out-low-quality-reads"><a class="anchor hidden-xs" href="#5A-Filter-out-low-quality-reads" title="5A-Filter-out-low-quality-reads"><span class="octicon octicon-link"></span></a>5A. Filter out low-quality reads</h3><pre><code class="coffeescript hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span>
+<span data-linenumber="2"></span>
+<span data-linenumber="3"></span>
+<span data-linenumber="4"></span></div><div class="code"><span class="hljs-comment">## Make new directory for the samples after quality control</span>
+mkdir <span class="hljs-number">03.</span>CleanData
+<span class="hljs-comment">## Make new directory for the unpaired reads (this is trash)</span>
+mkdir unpaired
+</div></div></code></pre><p>Run Trimmomatic (Modify the trimming parameters for your samples)</p><h4 id="Parameters"><a class="anchor hidden-xs" href="#Parameters" title="Parameters"><span class="octicon octicon-link"></span></a>Parameters</h4><p><em>LEADING</em> Remove low quality bases from the beginning. Specifies the minimum quality required to keep a base.</p><p><em>TRAILING</em> Remove low quality bases from the end. Specifies the minimum quality required to keep a base.</p><p><em>SLIDINGWINDOW</em> Perform a sliding window trimming, cutting once the average quality within the window falls below a threshold. WindowSize:requiredQuality.</p><p><em>MAXINFO</em> Performs an adaptive quality rim, balancing the benefits of retining reads against the cost of retaining bases with errors. targetLength:strictness.</p><p><em>MINLEN</em> Removes reads that fall below the specigied minimal length.</p><p>For more details see the <a href="http://www.usadellab.org/cms/uploads/supplementary/Trimmomatic/TrimmomaticManual_V0.32.pdf" target="_blank" rel="noopener">manual</a></p><pre><code class="coffeescript hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span>
+<span data-linenumber="2"></span>
+<span data-linenumber="3"></span>
+<span data-linenumber="4"></span>
+<span data-linenumber="5"></span>
+<span data-linenumber="6"></span></div><div class="code">for i in 01.PrimersTrim/*1.fq.gz
+do
+BASE=$(basename $i 1.fq.gz)
+## The number of threads is depending of your pc
+trimmomatic PE -threads 12 $i 01.PrimersTrim/${BASE}2.fq.gz 03.CleanData/${BASE}1_paired.fq.gz unpaired/${BASE}1_unpaired.fq.gz 03.CleanData/${BASE}2_paired.fq.gz unpaired/${BASE}2_unpaired.fq.gz LEADING:3 TRAILING:3 SLIDINGWINDOW:4:15 MAXINFO:80:0.5 MINLEN:200
+done
+</div></div></code></pre><p>Re-check the quality</p><pre><code class="coffeescript hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span>
+<span data-linenumber="2"></span>
+<span data-linenumber="3"></span></div><div class="code">fastqc -t 10 03.CleanData/* -o 02.FastqcReports/
+multiqc 02.FastqcReports/*paired* -o 02.FastqcReports/
+## Download from Filezilla
+</div></div></code></pre><h2 id="6A-Importing-the-FASTQ-files-as-artifact"><a class="anchor hidden-xs" href="#6A-Importing-the-FASTQ-files-as-artifact" title="6A-Importing-the-FASTQ-files-as-artifact"><span class="octicon octicon-link"></span></a>6A. Importing the FASTQ files as artifact</h2><p>Create the ManifestFile.txt</p><pre><code class="coffeescript hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span>
+<span data-linenumber="2"></span>
+<span data-linenumber="3"></span>
+<span data-linenumber="4"></span>
+<span data-linenumber="5"></span>
+<span data-linenumber="6"></span>
+<span data-linenumber="7"></span>
+<span data-linenumber="8"></span>
+<span data-linenumber="9"></span>
+<span data-linenumber="10"></span>
+<span data-linenumber="11"></span></div><div class="code">nano ManifestFile.txt
+<span class="hljs-comment">## Columns separated by tab</span>
+sample-id	forward-absolute-filepath	reverse-absolute-filepath
+sample1	$PWD/<span class="hljs-number">03.</span>CleanData/sample1_R1_paired.fq.gz	$PWD/<span class="hljs-number">03.</span>CleanData/sample1_R2_paired.fq.gz
+sample2	$PWD/<span class="hljs-number">03.</span>CleanData/sample2_R1_paired.fq.gz	$PWD/<span class="hljs-number">03.</span>CleanData/sample2_R2_paired.fq.gz
+<span class="hljs-comment">## To exit</span>
+Ctrl + x
+<span class="hljs-comment">## To Save</span>
+$ S
+<span class="hljs-comment">## To confirm</span>
+$ Enter
+</div></div></code></pre><p>Like this!</p><p><img src="https://i.imgur.com/KGIktLJ.jpg" alt=""></p><pre><code class="coffeescript hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span>
+<span data-linenumber="2"></span>
+<span data-linenumber="3"></span>
+<span data-linenumber="4"></span>
+<span data-linenumber="5"></span>
+<span data-linenumber="6"></span>
+<span data-linenumber="7"></span>
+<span data-linenumber="8"></span>
+<span data-linenumber="9"></span>
+<span data-linenumber="10"></span>
+<span data-linenumber="11"></span>
+<span data-linenumber="12"></span>
+<span data-linenumber="13"></span>
+<span data-linenumber="14"></span></div><div class="code"><span class="hljs-comment">## To deactivate the bioinfo environment, stay in qiime2-2019.4 environment</span>
+conda deactivate
+<span class="hljs-comment">## Make new directory for the artifacts</span>
+mkdir <span class="hljs-number">04.</span>ImportedReads
+<span class="hljs-comment">## Import as artefact in qiime2</span>
+qiime tools <span class="hljs-keyword">import</span> \
+  --type <span class="hljs-string">'SampleData[PairedEndSequencesWithQuality]'</span> \
+  --input-path ManifestFile.txt \
+  --output-path <span class="hljs-number">04.</span>ImportedReads/reads_trimmed.qza \
+  --input-format PairedEndFastqManifestPhred33V2
+<span class="hljs-comment">## Visualization</span>
+qiime demux summarize \
+ --i-data <span class="hljs-number">04.</span>ImportedReads/reads_trimmed.qza \
+ --o-visualization <span class="hljs-number">04.</span>ImportedReads/reads_trimmed.qzv
+</div></div></code></pre><p>Use the qiime2 studio for visualizations <a href="https://" target="_blank" rel="noopener">https://view.qiime2.org/</a></p><p>Generate a table with the number of sequences in each step using a microbiome_helper script</p><pre><code class="coffeescript hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span>
+<span data-linenumber="2"></span>
+<span data-linenumber="3"></span></div><div class="code">microbiome_helper/qiime2_fastq_lengths.py <span class="hljs-number">04.</span>ImportedReads/reads_trimmed.qza --proc <span class="hljs-number">4</span> -o read_counts.tsv
+<span class="hljs-comment">## See the file</span>
+nano read_counts.tsv
+</div></div></code></pre><h2 id="7A-Extracting-fungal-ITS-with-itsXpress-optional--and-only-for-fungal-analysis"><a class="anchor hidden-xs" href="#7A-Extracting-fungal-ITS-with-itsXpress-optional--and-only-for-fungal-analysis" title="7A-Extracting-fungal-ITS-with-itsXpress-optional--and-only-for-fungal-analysis"><span class="octicon octicon-link"></span></a>7A. Extracting fungal ITS with <a href="https://github.com/USDA-ARS-GBRU/q2_itsxpress" target="_blank" rel="noopener">itsXpress</a> (optional- and only for fungal analysis)</h2><p>This qiime2 plugin extract ITS1 and ITS2 - as well as full-length ITS sequences from high-throughput sequencing datasets.</p><pre><code class="coffeescript hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span>
+<span data-linenumber="2"></span>
+<span data-linenumber="3"></span>
+<span data-linenumber="4"></span>
+<span data-linenumber="5"></span>
+<span data-linenumber="6"></span>
+<span data-linenumber="7"></span>
+<span data-linenumber="8"></span>
+<span data-linenumber="9"></span>
+<span data-linenumber="10"></span>
+<span data-linenumber="11"></span>
+<span data-linenumber="12"></span>
+<span data-linenumber="13"></span></div><div class="code"><span class="hljs-comment">## Installing the itsXpress plugin</span>
+conda install -c bioconda itsxpress
+<span class="hljs-comment">## Make new directory for ItsX output</span>
+mkdir <span class="hljs-number">05.</span>ItsXpress
+<span class="hljs-comment">## for help</span>
+qiime itsxpress trim-pair-output-unmerged --help
+<span class="hljs-comment">## Run (The region depends on your sequenced region)</span>
+qiime itsxpress trim-pair-output-unmerged \
+     --i-per-sample-sequences <span class="hljs-number">04.</span>ImportedReads/reads_trimmed.qza \
+     --p-region ITS2 \
+     --p-taxa F \
+     --p-threads <span class="hljs-number">10</span> \
+     --o-trimmed <span class="hljs-number">05.</span>ItsXpress/readstrimmed_istxpress_out.qza
+</div></div></code></pre><p>Generate a table with the number of sequences in each step using a microbiome_helper script</p><pre><code class="coffeescript hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span>
+<span data-linenumber="2"></span>
+<span data-linenumber="3"></span>
+<span data-linenumber="4"></span></div><div class="code">microbiome_helper/qiime2_fastq_lengths.py <span class="hljs-number">04.</span>ImportedReads/reads_trimmed.qza <span class="hljs-number">05.</span>ItsXpress/readstrimmed_istxpress_out.qza --proc <span class="hljs-number">4</span> -o read_counts.tsv
+<span class="hljs-comment">## See the file</span>
+nano read_counts.tsv
+<span class="hljs-comment">## Complete your summary_stats.xlsx file!!</span>
+</div></div></code></pre><h2 id="8A-Denoising-joining-reads-and-chimera-removing-with-DADA20"><a class="anchor hidden-xs" href="#8A-Denoising-joining-reads-and-chimera-removing-with-DADA20" title="8A-Denoising-joining-reads-and-chimera-removing-with-DADA20"><span class="octicon octicon-link"></span></a>8A. Denoising, joining reads and chimera removing with DADA2</h2><pre><code class="coffeescript hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span>
+<span data-linenumber="2"></span>
+<span data-linenumber="3"></span>
+<span data-linenumber="4"></span>
+<span data-linenumber="5"></span>
+<span data-linenumber="6"></span>
+<span data-linenumber="7"></span>
+<span data-linenumber="8"></span>
+<span data-linenumber="9"></span>
+<span data-linenumber="10"></span></div><div class="code"><span class="hljs-comment">## Run DADA2</span>
+qiime dada2 denoise-paired --i-demultiplexed-seqs <span class="hljs-number">05.</span>ItsXpress/readstrimmed_istxpress_out.qza \
+                           --p-trunc-len-f <span class="hljs-number">0</span> \
+                           --p-trunc-len-r <span class="hljs-number">0</span> \
+                           --output-dir <span class="hljs-number">06.</span>Dada2Output
+<span class="hljs-comment">## Convert the denoising stats from .qza to .tsv</span>
+$ qiime tools <span class="hljs-keyword">export</span> --input-path <span class="hljs-number">06.</span>Dada2Output/denoising_stats.qza --output-path <span class="hljs-number">06.</span>Dada2Output
+<span class="hljs-comment">## See the file</span>
+nano <span class="hljs-number">06.</span>Dada2Output/stats.tsv
+<span class="hljs-comment">## Complete your summary_stats.xlsx file!!</span>
+</div></div></code></pre><h2 id="9-Download-and-fit-the-database"><a class="anchor hidden-xs" href="#9-Download-and-fit-the-database" title="9-Download-and-fit-the-database"><span class="octicon octicon-link"></span></a>9. Download and fit the database</h2><p>For fungal classification the database is UNITE</p><p>You can fit the database, or download ready to use <a href="http://kronos.pharmacology.dal.ca/public_files/taxa_classifiers/qiime2-2019.7_classifiers/classifier_sh_refs_qiime_ver8_99_s_02.02.2019_ITS.qza" target="_blank" rel="noopener">here</a></p><pre><code class="coffeescript hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span>
+<span data-linenumber="2"></span>
+<span data-linenumber="3"></span>
+<span data-linenumber="4"></span>
+<span data-linenumber="5"></span>
+<span data-linenumber="6"></span>
+<span data-linenumber="7"></span>
+<span data-linenumber="8"></span>
+<span data-linenumber="9"></span>
+<span data-linenumber="10"></span></div><div class="code"><span class="hljs-comment">## Download the database</span>
+wget https:<span class="hljs-regexp">//</span>files.plutof.ut.ee/public/orig/<span class="hljs-number">51</span>/<span class="hljs-number">6</span>F/<span class="hljs-number">516</span>F387FC543287E1E2B04BA4654443082FE3D7050E92F5D53BA0702E4E77CD4.zip
+<span class="hljs-comment">## Change the name</span>
+mv <span class="hljs-number">516</span>F387FC543287E1E2B04BA4654443082FE3D7050E92F5D53BA0702E4E77CD4.zip unite_02_02_2019.zip
+<span class="hljs-comment">## Unzip</span>
+unzip unite_02_02_2019.zip
+<span class="hljs-comment">## Remove all the files out of developver directory</span>
+rm unite_02_02_2019.zip *.fasta *.txt
+<span class="hljs-comment">## Formating the fasta file</span>
+awk <span class="hljs-string">'/^&gt;/ {print($0)}; /^[^&gt;]/ {print(toupper($0))}'</span> developer<span class="hljs-regexp">/sh_refs_qiime_ver8_dynamic_02.02.2019_dev.fasta | sed -e '/</span>^&gt;<span class="hljs-regexp">/!s/</span>\(.*\)<span class="hljs-regexp">/\U\1/</span>;s<span class="hljs-regexp">/[[:blank:]]*$/</span>/<span class="hljs-string">' &gt; developer/sh_refs_qiime_ver8_dynamic_02.02.2019_uppercase.fasta
+</span></div></div></code></pre><pre><code class="coffeescript hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span>
+<span data-linenumber="2"></span>
+<span data-linenumber="3"></span>
+<span data-linenumber="4"></span>
+<span data-linenumber="5"></span>
+<span data-linenumber="6"></span>
+<span data-linenumber="7"></span>
+<span data-linenumber="8"></span>
+<span data-linenumber="9"></span>
+<span data-linenumber="10"></span>
+<span data-linenumber="11"></span>
+<span data-linenumber="12"></span>
+<span data-linenumber="13"></span>
+<span data-linenumber="14"></span>
+<span data-linenumber="15"></span>
+<span data-linenumber="16"></span>
+<span data-linenumber="17"></span>
+<span data-linenumber="18"></span></div><div class="code"><span class="hljs-comment">## Make new directory for the database</span>
+mkdir database
+<span class="hljs-comment">## Import the sequences as artifact</span>
+qiime tools <span class="hljs-keyword">import</span> \
+ --type FeatureData[Sequence] \
+ --input-path developer/sh_refs_qiime_ver8_dynamic_02<span class="hljs-number">.02</span><span class="hljs-number">.2019</span>_uppercase.fasta \
+ --output-path database/UNITE.qza
+<span class="hljs-comment">## Import the taxonomy file as artifact</span>
+qiime tools <span class="hljs-keyword">import</span> \
+ --type FeatureData[Taxonomy] \
+ --input-path developer/sh_taxonomy_qiime_ver8_dynamic_02<span class="hljs-number">.02</span><span class="hljs-number">.2019</span>_dev.txt \
+ --output-path database/UNITE_tax.qza \
+ --input-format HeaderlessTSVTaxonomyFormat
+<span class="hljs-comment">## fit the database</span>
+qiime feature-classifier fit-classifier-naive-bayes \
+ --i-reference-reads database/UNITE.qza \
+ --i-reference-taxonomy database/UNITE_tax.qza \
+ --o-classifier database/UNITE_classifier.qza
+</div></div></code></pre><p>If your analysis isn’t for fungal sequences, bellow can you download the databases based on the region sequenced:</p><ul>
+<li><a href="http://kronos.pharmacology.dal.ca/public_files/taxa_classifiers/qiime2-2019.7_classifiers/classifier_silva_132_99_16S_V4.V5_515F_926R.qza" target="_blank" rel="noopener">16S V4/V5 region</a> <code>(classifier_silva_132_99_16S_V4.V5_515F_926R.qza</code>)</li>
+<li><a href="http://kronos.pharmacology.dal.ca/public_files/taxa_classifiers/qiime2-2019.7_classifiers/classifier_silva_132_99_16S_V6.V8_B969F_BA1406R.qza" target="_blank" rel="noopener">16S V6/V8 region</a> <code>(classifier_silva_132_99_16S_V6.V8_B969F_BA1406R.qza)</code></li>
+<li><a href="http://kronos.pharmacology.dal.ca/public_files/taxa_classifiers/qiime2-2019.7_classifiers/classifier_silva_132_99_16S_V6.V8_A956F_A1401R.qza" target="_blank" rel="noopener">16S V6/V8 region targeting archaea</a><code>(classifier_silva_132_99_16S_V6.V8_A956F_A1401R.qza)</code></li>
+<li><a href="http://kronos.pharmacology.dal.ca/public_files/taxa_classifiers/qiime2-2019.7_classifiers/classifier_silva_132_99_18S_V4_E572F_E1009R.qza" target="_blank" rel="noopener">18S V4 region</a><code>(classifier_silva_132_99_18S_V4_E572F_E1009R.qza)</code></li>
+<li><a href="http://kronos.pharmacology.dal.ca/public_files/taxa_classifiers/qiime2-2019.7_classifiers/classifier_sh_refs_qiime_ver8_99_s_all_02.02.2019_ITS.qza" target="_blank" rel="noopener">Full ITS - all eukaryotes</a><code>(classifier_sh_refs_qiime_ver8_99_s_all_02.02.2019_ITS.qza)</code></li>
+</ul><h2 id="10-Assign-taxonomy-to-ASVs0"><a class="anchor hidden-xs" href="#10-Assign-taxonomy-to-ASVs0" title="10-Assign-taxonomy-to-ASVs0"><span class="octicon octicon-link"></span></a>10. Assign taxonomy to ASVs</h2><pre><code class="coffeescript hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span>
+<span data-linenumber="2"></span>
+<span data-linenumber="3"></span>
+<span data-linenumber="4"></span>
+<span data-linenumber="5"></span>
+<span data-linenumber="6"></span>
+<span data-linenumber="7"></span></div><div class="code"><span class="hljs-comment">## Make new directory for the taxonomy classification</span>
+mkdir <span class="hljs-number">07.</span>TaxonomyClassification
+<span class="hljs-comment">## Run</span>
+qiime feature-classifier classify-sklearn \
+  --i-classifier database/UNITE_classifier.qza \
+  --i-reads <span class="hljs-number">06.</span>Dada2Output/representative_sequences.qza \
+  --o-classification <span class="hljs-number">07.</span>TaxonomyClassification/taxonomyclassification_dynamic.qza
+</div></div></code></pre><p>It’s recommend to compare the taxonomic assigments with the top BLASTn hits for certain ASVs (~5)</p><pre><code class="coffeescript hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span>
+<span data-linenumber="2"></span></div><div class="code">qiime feature-table tabulate-seqs --i-data <span class="hljs-number">06.</span>Dada2Output/representative_sequences.qza \
+                                  --o-visualization <span class="hljs-number">06.</span>Dada2Output/representative_sequences.qzv
+</div></div></code></pre><p>representative_sequences.qzv
+<img src="https://i.imgur.com/k52uLkB.jpg" alt=""></p><h2 id="BONUS-FOR-16S-analysis"><a class="anchor hidden-xs" href="#BONUS-FOR-16S-analysis" title="BONUS-FOR-16S-analysis"><span class="octicon octicon-link"></span></a>BONUS (FOR 16S analysis)</h2><h3 id="Build-tree-with-FastTree-and-MAFFT-qiime2-plugins"><a class="anchor hidden-xs" href="#Build-tree-with-FastTree-and-MAFFT-qiime2-plugins" title="Build-tree-with-FastTree-and-MAFFT-qiime2-plugins"><span class="octicon octicon-link"></span></a>Build tree with FastTree and MAFFT qiime2 plugins</h3><pre><code class="coffeescript hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span>
+<span data-linenumber="2"></span>
+<span data-linenumber="3"></span>
+<span data-linenumber="4"></span>
+<span data-linenumber="5"></span>
+<span data-linenumber="6"></span>
+<span data-linenumber="7"></span>
+<span data-linenumber="8"></span>
+<span data-linenumber="9"></span>
+<span data-linenumber="10"></span>
+<span data-linenumber="11"></span>
+<span data-linenumber="12"></span>
+<span data-linenumber="13"></span>
+<span data-linenumber="14"></span>
+<span data-linenumber="15"></span>
+<span data-linenumber="16"></span>
+<span data-linenumber="17"></span>
+<span data-linenumber="18"></span>
+<span data-linenumber="19"></span></div><div class="code"><span class="hljs-comment">## Make new directory for the phylogenetic tree</span>
+mkdir <span class="hljs-number">12.</span>PhylogeneticTree
+<span class="hljs-comment">## Multiple align with MAFFT</span>
+qiime alignment mafft --i-sequences <span class="hljs-number">06.</span>DadaOutput/representative_sequences.qza \
+                        --p-n-threads <span class="hljs-number">4</span> \
+                        --o-alignment <span class="hljs-number">12.</span>PhylogeneticTree/rep_seqs_aligned.qza
+
+qiime alignment mask --i-alignment  <span class="hljs-number">12.</span>PhylogeneticTree/rep_seqs_aligned.qza \
+                       --o-masked-alignment <span class="hljs-number">12.</span>PhylogeneticTree/rep_seqs_aligned_masked.qza
+         
+  <span class="hljs-comment">## FastTree</span>
+qiime phylogeny fasttree --i-alignment <span class="hljs-number">12.</span>PhylogeneticTree/rep_seqs_aligned_masked.qza \
+                         --p-n-threads <span class="hljs-number">4</span> \
+                         --o-tree <span class="hljs-number">12.</span>PhylogeneticTree/rep_seqs_aligned_masked_tree.qza
+
+<span class="hljs-comment"># Root the tree</span>
+
+qiime phylogeny midpoint-root --i-tree  <span class="hljs-number">12.</span>PhylogeneticTree/rep_seqs_aligned_masked_tree.qza \
+                              --o-rooted-tree <span class="hljs-number">12.</span>PhylogeneticTree/rep_seqs_aligned_masked_tree_rooted.qza
+</div></div></code></pre><h2 id="11-Barplot"><a class="anchor hidden-xs" href="#11-Barplot" title="11-Barplot"><span class="octicon octicon-link"></span></a>11. Barplot</h2><pre><code class="coffeescript hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span>
+<span data-linenumber="2"></span>
+<span data-linenumber="3"></span>
+<span data-linenumber="4"></span>
+<span data-linenumber="5"></span>
+<span data-linenumber="6"></span>
+<span data-linenumber="7"></span>
+<span data-linenumber="8"></span>
+<span data-linenumber="9"></span></div><div class="code"><span class="hljs-comment">## Make new directory for the graphs</span>
+mkdir <span class="hljs-number">08.</span>Graphs
+<span class="hljs-comment">## Create a sample-metadata.txt file. Here you can put all the variables that describes your samples</span>
+nano sample-metadata.txt
+sample-id	SampleName	SampleType	Local	Date	
+<span class="hljs-comment">#q2:types	categorical	categorical	categorical	categorical</span>
+sample1	sample1	water	SãoPaulo	April<span class="hljs-number">-18</span>	
+sample2	sample2	Soil	Campinas	April<span class="hljs-number">-19</span>
+<span class="hljs-comment">## The second row is for classify the variable according to its nature (p.e categorical ou numerical) </span>
+</div></div></code></pre><p>Like this! Separate by tab
+<img src="https://i.imgur.com/94lVeFk.jpg" alt=""></p><pre><code class="coffeescript hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span>
+<span data-linenumber="2"></span>
+<span data-linenumber="3"></span>
+<span data-linenumber="4"></span>
+<span data-linenumber="5"></span>
+<span data-linenumber="6"></span></div><div class="code"><span class="hljs-comment">## Make a barplot</span>
+qiime taxa barplot \
+  --i-table <span class="hljs-number">06.</span>Dada2Output/table.qza \
+  --i-taxonomy <span class="hljs-number">07.</span>TaxonomyClassification/taxonomyclassification_dynamic.qza \
+  --m-metadata-file sample-metadata.txt \
+  --o-visualization <span class="hljs-number">08.</span>Graphs/taxa-bar-plots-dynamic.qzv
+</div></div></code></pre><p>Barplot on qiime2
+<img src="https://i.imgur.com/c7cgLoV.jpg" alt=""></p><h2 id="12-Rarefaction-curves"><a class="anchor hidden-xs" href="#12-Rarefaction-curves" title="12-Rarefaction-curves"><span class="octicon octicon-link"></span></a>12. Rarefaction curves</h2><p>See the table from DADA2 output to know the depth</p><pre><code class="coffeescript hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span>
+<span data-linenumber="2"></span>
+<span data-linenumber="3"></span>
+<span data-linenumber="4"></span></div><div class="code">qiime feature-table summarize \
+           --i-table <span class="hljs-number">06.</span>Dada2Output/table.qza \
+           --o-visualization <span class="hljs-number">06.</span>Dada2Output/table_summary.qzv \
+           --m-sample-metadata-file sample-metadata.txt
+</div></div></code></pre><p>table_summary.qzv</p><p><img src="https://i.imgur.com/buO38M6.jpg" alt=""></p><pre><code class="coffeescript hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span>
+<span data-linenumber="2"></span>
+<span data-linenumber="3"></span>
+<span data-linenumber="4"></span>
+<span data-linenumber="5"></span>
+<span data-linenumber="6"></span>
+<span data-linenumber="7"></span>
+<span data-linenumber="8"></span>
+<span data-linenumber="9"></span>
+<span data-linenumber="10"></span>
+<span data-linenumber="11"></span>
+<span data-linenumber="12"></span></div><div class="code"><span class="hljs-comment">## Make new directory for the rarefaction curves</span>
+mkdir <span class="hljs-number">09.</span>RarefactionCurves
+<span class="hljs-comment">## Run</span>
+qiime diversity alpha-rarefaction --i-table <span class="hljs-number">06.</span>Dada2Output/table.qza \
+                                    --p-max-depth <span class="hljs-number">6782</span> \
+                                    --p-steps <span class="hljs-number">10</span> \
+                                    --p-metrics shannon \
+                                    --p-metrics observed_otus \
+                                    --p-metrics simpson \
+                                    --p-metrics chao1 \
+                                    --m-metadata-file sample-metadata.txt \
+                                    --o-visualization <span class="hljs-number">09.</span>RarefactionCurves/rarefaction_curves.qzv
+</div></div></code></pre><p>rarefaction_curves.qzv
+<img src="https://i.imgur.com/CCrAzrF.jpg" alt=""></p><h2 id="13-Alpha-and-Beta-diversity-analysis"><a class="anchor hidden-xs" href="#13-Alpha-and-Beta-diversity-analysis" title="13-Alpha-and-Beta-diversity-analysis"><span class="octicon octicon-link"></span></a>13. Alpha and Beta diversity analysis</h2><p>Choose the sampling-depth based on the shortest library (see table_summary.qzv).</p><p>For fungal analysis isn’t recommend to use phylogenetic distances. For 16S analysis use the command <code>qiime diversity core-metrics-phylogenetic</code> to include the phylogenetic analysis and use <code>12.PhylogeneticTree/rep_seqs_aligned_masked_tree_rooted.qza</code> tree</p><pre><code class="coffeescript hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span>
+<span data-linenumber="2"></span>
+<span data-linenumber="3"></span>
+<span data-linenumber="4"></span>
+<span data-linenumber="5"></span>
+<span data-linenumber="6"></span>
+<span data-linenumber="7"></span>
+<span data-linenumber="8"></span>
+<span data-linenumber="9"></span>
+<span data-linenumber="10"></span>
+<span data-linenumber="11"></span>
+<span data-linenumber="12"></span>
+<span data-linenumber="13"></span>
+<span data-linenumber="14"></span>
+<span data-linenumber="15"></span>
+<span data-linenumber="16"></span>
+<span data-linenumber="17"></span>
+<span data-linenumber="18"></span>
+<span data-linenumber="19"></span>
+<span data-linenumber="20"></span>
+<span data-linenumber="21"></span>
+<span data-linenumber="22"></span></div><div class="code">qiime diversity core-metrics --i-table <span class="hljs-number">06.</span>Dada2Output/table.qza \
+                                          --p-sampling-depth <span class="hljs-number">6089</span> \
+                                          --m-metadata-file sample-metadata.txt \
+                                          --p-n-jobs <span class="hljs-number">4</span> \
+                                          --output-dir <span class="hljs-number">10.</span>AlphaBetaDiversity
+
+qiime diversity alpha --i-table <span class="hljs-number">06.</span>Dada2Output/table.qza \
+                        --p-metric chao1 \
+                        --o-alpha-diversity <span class="hljs-number">10.</span>AlphaBetaDiversity/chao1_vector.qza
+
+qiime diversity alpha --i-table <span class="hljs-number">06.</span>Dada2Output/table.qza \
+                        --p-metric simpson \
+                        --o-alpha-diversity <span class="hljs-number">10.</span>AlphaBetaDiversity/simpson_vector.qza
+
+<span class="hljs-comment"># To see all the vectors (alpha diversity indexes and estimators) in a one table</span>
+
+qiime metadata tabulate --m-input-file sample-metadata.txt \
+                          --m-input-file <span class="hljs-number">10.</span>AlphaBetaDiversity/shannon_vector.qza \
+                          --m-input-file <span class="hljs-number">10.</span>AlphaBetaDiversity/observed_otus_vector.qza \
+                          --m-input-file <span class="hljs-number">10.</span>AlphaBetaDiversity/simpson_vector.qza \
+                          --m-input-file <span class="hljs-number">10.</span>AlphaBetaDiversity/chao1_vector.qza \
+                          --o-visualization <span class="hljs-number">10.</span>AlphaBetaDiversity/alfadiversidade_all.qzv
+</div></div></code></pre><h2 id="14-Exporting"><a class="anchor hidden-xs" href="#14-Exporting" title="14-Exporting"><span class="octicon octicon-link"></span></a>14. Exporting</h2><pre><code class="coffeescript hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span>
+<span data-linenumber="2"></span>
+<span data-linenumber="3"></span>
+<span data-linenumber="4"></span>
+<span data-linenumber="5"></span>
+<span data-linenumber="6"></span>
+<span data-linenumber="7"></span>
+<span data-linenumber="8"></span>
+<span data-linenumber="9"></span></div><div class="code"><span class="hljs-comment">## Make new directory for the exported files</span>
+mkdir <span class="hljs-number">11.</span>ExportArquives
+qiime tools <span class="hljs-keyword">export</span> --input-path <span class="hljs-number">06.</span>Dada2Output/table.qza \
+                     --output-path <span class="hljs-number">11.</span>ExportFiles/
+<span class="hljs-comment">## .biom to .tsv</span>
+biom convert -i <span class="hljs-number">11.</span>ExportFiles/feature-table.biom \
+               -o <span class="hljs-number">11.</span>ExportFiles/Otu_Table.tsv \
+               --to-tsv \
+               --table-type <span class="hljs-string">"OTU table"</span>
+</div></div></code></pre><p>Open <code>Otu_Table.tsv file</code>, change #OTUID to OTUID.</p><pre><code class="coffeescript hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span></div><div class="code">nano <span class="hljs-number">11.</span>ExportFiles/Otu_Table.tsv
+</div></div></code></pre><p>Export the taxonomy</p><pre><code class="coffeescript hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span>
+<span data-linenumber="2"></span></div><div class="code">qiime tools <span class="hljs-keyword">export</span> --input-path  <span class="hljs-number">07.</span>TaxonomyClassification/taxonomyclassification_dynamic.qza \
+                     --output-path <span class="hljs-number">11.</span>ExportFiles/taxonomy
+</div></div></code></pre><p>Open <code>taxonomy.tsv</code>, change Feature ID to OTUID</p><pre><code class="coffeescript hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span></div><div class="code">nano <span class="hljs-number">11.</span>ExportFiles/taxonomy/taxonomy.tsv
+</div></div></code></pre><h1 id="Final-summary_statsxlsx"><a class="anchor hidden-xs" href="#Final-summary_statsxlsx" title="Final-summary_statsxlsx"><span class="octicon octicon-link"></span></a>Final <code>summary_stats.xlsx</code></h1><table>
+<thead>
+<tr>
+<th>SampleID</th>
+<th>Raw_reads</th>
+<th>Length</th>
+<th>Post_trim_primers</th>
+<th>Diference</th>
+<th>Post-trim</th>
+<th style="text-align:center">Diference</th>
+<th>itsXpress</th>
+<th>Difference</th>
+<th>% Lost</th>
+<th>Denoised</th>
+<th>Difference</th>
+<th>Merged</th>
+<th>non-chimeric</th>
+<th>Difference</th>
+<th>Final difference</th>
+<th>Final % lost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>sample1</td>
+<td>10000</td>
+<td>48-251</td>
+<td>10000</td>
+<td>0</td>
+<td>7755</td>
+<td style="text-align:center">2245</td>
+<td>6415</td>
+<td>3585</td>
+<td>22,45</td>
+<td>6354</td>
+<td>3646</td>
+<td>6089</td>
+<td>3911</td>
+<td>6089</td>
+<td>3911</td>
+<td>39,11</td>
+</tr>
+<tr>
+<td>sample2</td>
+<td>10000</td>
+<td>48-251</td>
+<td>10000</td>
+<td>0</td>
+<td>7414</td>
+<td style="text-align:center">2614</td>
+<td>7386</td>
+<td>2614</td>
+<td>25,86</td>
+<td>7296</td>
+<td>2704</td>
+<td>6782</td>
+<td>3218</td>
+<td>6782</td>
+<td>3218</td>
+<td>32,18</td>
+</tr>
+</tbody>
+</table><hr><h2 id="Second-option-Quality-control-and-trimming-with-Qiime2-plugins"><a class="anchor hidden-xs" href="#Second-option-Quality-control-and-trimming-with-Qiime2-plugins" title="Second-option-Quality-control-and-trimming-with-Qiime2-plugins"><span class="octicon octicon-link"></span></a><em>Second option: Quality control and trimming with Qiime2 plugins</em></h2><hr><h2 id="2B-Importing-the-FASTQ-files-as-artifact"><a class="anchor hidden-xs" href="#2B-Importing-the-FASTQ-files-as-artifact" title="2B-Importing-the-FASTQ-files-as-artifact"><span class="octicon octicon-link"></span></a>2B. Importing the FASTQ files as artifact</h2><p>Create the ManifestFile.txt</p><pre><code class="coffeescript hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span>
+<span data-linenumber="2"></span>
+<span data-linenumber="3"></span>
+<span data-linenumber="4"></span>
+<span data-linenumber="5"></span>
+<span data-linenumber="6"></span>
+<span data-linenumber="7"></span>
+<span data-linenumber="8"></span>
+<span data-linenumber="9"></span>
+<span data-linenumber="10"></span>
+<span data-linenumber="11"></span></div><div class="code">nano ManifestFile.txt
+<span class="hljs-comment">## Columns separated by tab</span>
+sample-id	forward-absolute-filepath	reverse-absolute-filepath
+sample1	$PWD/<span class="hljs-number">00.</span>RawData/sample1_r1.fq.gz	$PWD/<span class="hljs-number">00.</span>RawData/sample1_r2.fq.gz
+sample2	$PWD/<span class="hljs-number">00.</span>RawData/sample2_r1.fq.gz	$PWD/<span class="hljs-number">00.</span>RawData/sample2_r2.fq.gz
+<span class="hljs-comment">## To exit</span>
+Ctrl + x
+<span class="hljs-comment">## To Save</span>
+$ S
+<span class="hljs-comment">## To confirm</span>
+$ Enter
+</div></div></code></pre><p>Like this!</p><p><img src="https://i.imgur.com/33TJ0RA.jpg" alt=""></p><pre><code class="coffeescript hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span>
+<span data-linenumber="2"></span>
+<span data-linenumber="3"></span>
+<span data-linenumber="4"></span>
+<span data-linenumber="5"></span>
+<span data-linenumber="6"></span>
+<span data-linenumber="7"></span>
+<span data-linenumber="8"></span>
+<span data-linenumber="9"></span>
+<span data-linenumber="10"></span>
+<span data-linenumber="11"></span>
+<span data-linenumber="12"></span></div><div class="code"><span class="hljs-comment">## Make new directory for the artifacts</span>
+mkdir <span class="hljs-number">01.</span>ImportedReads
+<span class="hljs-comment">## Import as artefact in qiime2</span>
+qiime tools <span class="hljs-keyword">import</span> \
+  --type <span class="hljs-string">'SampleData[PairedEndSequencesWithQuality]'</span> \
+  --input-path ManifestFile.txt \
+  --output-path <span class="hljs-number">01.</span>ImportedReads/reads_raw.qza \
+  --input-format PairedEndFastqManifestPhred33V2
+<span class="hljs-comment">## Visualization</span>
+qiime demux summarize \
+ --i-data <span class="hljs-number">01.</span>ImportedReads/reads_raw.qza \
+ --o-visualization <span class="hljs-number">01.</span>ImportedReads/reads_raw.qzv
+</div></div></code></pre><p>Use the qiime2 studio for visualizations <a href="https://" target="_blank" rel="noopener">https://view.qiime2.org/</a></p><p>Download microbiome_helper package</p><pre><code class="coffeescript hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span></div><div class="code">git clone https:<span class="hljs-regexp">//gi</span>thub.com/LangilleLab/microbiome_helper.git
+</div></div></code></pre><p>Generate a table with the number of sequences in each step using a microbiome_helper script</p><pre><code class="coffeescript hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span>
+<span data-linenumber="2"></span>
+<span data-linenumber="3"></span></div><div class="code">microbiome_helper/qiime2_fastq_lengths.py <span class="hljs-number">01.</span>ImportedReads/reads_raw.qza --proc <span class="hljs-number">4</span> -o read_counts.tsv
+<span class="hljs-comment">## See the file</span>
+nano read_counts.tsv
+</div></div></code></pre><h2 id="3B-Trim-primers-with-cutadapt-qiime2-plugin"><a class="anchor hidden-xs" href="#3B-Trim-primers-with-cutadapt-qiime2-plugin" title="3B-Trim-primers-with-cutadapt-qiime2-plugin"><span class="octicon octicon-link"></span></a>3B. Trim primers with cutadapt qiime2 plugin</h2><p>The cutadapt is a qiime2 plugin.</p><p>The cutadapt screen out reads that do not begin with primer sequences and remove primer sequence from reads.</p><pre><code class="coffeescript hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span>
+<span data-linenumber="2"></span>
+<span data-linenumber="3"></span>
+<span data-linenumber="4"></span>
+<span data-linenumber="5"></span>
+<span data-linenumber="6"></span>
+<span data-linenumber="7"></span>
+<span data-linenumber="8"></span>
+<span data-linenumber="9"></span>
+<span data-linenumber="10"></span>
+<span data-linenumber="11"></span>
+<span data-linenumber="12"></span>
+<span data-linenumber="13"></span>
+<span data-linenumber="14"></span>
+<span data-linenumber="15"></span>
+<span data-linenumber="16"></span></div><div class="code">qiime cutadapt trim-paired \
+   --i-demultiplexed-sequences <span class="hljs-number">01.</span>ImportedReads/reads_raw.qza \
+   --p-cores <span class="hljs-number">10</span> \
+   --p-front-f GCATCGATGAAGAACGCAGC \
+   --p-front-r TCCTCCGCTTATTGATATGC \
+   --p-discard-untrimmed \
+   --p-<span class="hljs-literal">no</span>-indels \
+   --o-trimmed-sequences <span class="hljs-number">01.</span>ImportedReads/reads_primerstrim.qza
+
+<span class="hljs-comment"># Visualization</span>
+qiime demux summarize \
+ --i-data <span class="hljs-number">01.</span>ImportedReads/reads_primerstrim.qza \
+ --o-visualization <span class="hljs-number">01.</span>ImportedReads/reads_primerstrim.qzv
+
+<span class="hljs-comment"># Generate a table with the number of sequences in each step using a microbiome_helper script</span>
+$ microbiome_helper/qiime2_fastq_lengths.py <span class="hljs-number">01.</span>ImportedReads/reads_raw.qza <span class="hljs-number">01.</span>ImportedReads/reads_primerstrim.qza --proc <span class="hljs-number">4</span> -o read_counts.tsv 
+</div></div></code></pre><h2 id="4B-Extracting-fungal-ITS-with-itsXpress-optional--and-only-for-fungal-analysis"><a class="anchor hidden-xs" href="#4B-Extracting-fungal-ITS-with-itsXpress-optional--and-only-for-fungal-analysis" title="4B-Extracting-fungal-ITS-with-itsXpress-optional--and-only-for-fungal-analysis"><span class="octicon octicon-link"></span></a>4B. Extracting fungal ITS with itsXpress (optional- and only for fungal analysis)</h2><p>This qiime2 plugin extract ITS1 and ITS2 - as well as full-length ITS sequences from high-throughput sequencing datasets.</p><pre><code class="coffeescript hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span>
+<span data-linenumber="2"></span>
+<span data-linenumber="3"></span>
+<span data-linenumber="4"></span>
+<span data-linenumber="5"></span>
+<span data-linenumber="6"></span>
+<span data-linenumber="7"></span>
+<span data-linenumber="8"></span>
+<span data-linenumber="9"></span>
+<span data-linenumber="10"></span>
+<span data-linenumber="11"></span>
+<span data-linenumber="12"></span>
+<span data-linenumber="13"></span></div><div class="code"><span class="hljs-comment">## Installing the itsXpress plugin</span>
+conda install -c bioconda itsxpress
+<span class="hljs-comment">## Make new directory for ItsX output</span>
+mkdir <span class="hljs-number">02.</span>ItsXpress
+<span class="hljs-comment">## for help</span>
+qiime itsxpress trim-pair-output-unmerged --help
+<span class="hljs-comment">## Run (The region depends on your sequenced region)</span>
+qiime itsxpress trim-pair-output-unmerged \
+     --i-per-sample-sequences <span class="hljs-number">01.</span>ImportedReads/reads_primerstrim.qza \
+     --p-region ITS2 \
+     --p-taxa F \
+     --p-threads <span class="hljs-number">10</span> \
+     --o-trimmed <span class="hljs-number">02.</span>ItsXpress/readstrimmed_itsxpress_out.qza
+</div></div></code></pre><p>Generate a table with the number of sequences in each step using a microbiome_helper script</p><pre><code class="coffeescript hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span>
+<span data-linenumber="2"></span>
+<span data-linenumber="3"></span>
+<span data-linenumber="4"></span></div><div class="code">microbiome_helper/qiime2_fastq_lengths.py <span class="hljs-number">01.</span>ImportedReads/reads_raw.qza <span class="hljs-number">01.</span>ImportedReads/reads_primerstrim.qza <span class="hljs-number">02.</span>ItsXpress/readstrimmed_itsxpress_out.qza --proc <span class="hljs-number">4</span> -o read_counts.tsv
+<span class="hljs-comment">## See the file</span>
+nano read_counts.tsv
+<span class="hljs-comment">## Complete your summary_stats.xlsx file!!</span>
+</div></div></code></pre><h2 id="5B-Quality-contol-filtering-Denoising-joining-reads-and-chimera-removing-with-DADA2"><a class="anchor hidden-xs" href="#5B-Quality-contol-filtering-Denoising-joining-reads-and-chimera-removing-with-DADA2" title="5B-Quality-contol-filtering-Denoising-joining-reads-and-chimera-removing-with-DADA2"><span class="octicon octicon-link"></span></a>5B. Quality contol, filtering, Denoising, joining reads and chimera removing with DADA2</h2><pre><code class="coffeescript hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span>
+<span data-linenumber="2"></span>
+<span data-linenumber="3"></span>
+<span data-linenumber="4"></span></div><div class="code"><span class="hljs-comment">## See the reads quality</span>
+qiime demux summarize \
+ --i-data <span class="hljs-number">02.</span>ItsXpress/readstrimmed_itsxpress_out.qza \
+ --o-visualization <span class="hljs-number">02.</span>ItsXpress/readstrimmed_itsxpress_out.qzv
+</div></div></code></pre><p><img src="https://i.imgur.com/VDCMwTu.png" alt="TruncLef"></p><pre><code class="coffeescript hljs"><div class="wrapper"><div class="gutter linenumber"><span data-linenumber="1"></span>
+<span data-linenumber="2"></span>
+<span data-linenumber="3"></span>
+<span data-linenumber="4"></span>
+<span data-linenumber="5"></span>
+<span data-linenumber="6"></span>
+<span data-linenumber="7"></span>
+<span data-linenumber="8"></span>
+<span data-linenumber="9"></span>
+<span data-linenumber="10"></span>
+<span data-linenumber="11"></span>
+<span data-linenumber="12"></span>
+<span data-linenumber="13"></span>
+<span data-linenumber="14"></span>
+<span data-linenumber="15"></span></div><div class="code"><span class="hljs-comment">## For help</span>
+qiime dada2 denoise-paired --help
+<span class="hljs-comment">## Run DADA2 . Replace XX with the values for your samples according with observed in readstrimmed_itsxpress_out.qzv</span>
+qiime dada2 denoise-paired --i-demultiplexed-seqs <span class="hljs-number">02.</span>ItsXpress/readstrimmed_istxpress_out.qza \
+                           --p-trunc-len-f  \
+                           --p-trunc-len-r  \
+                           --p-trim-len-r   \
+                           --p-rim-left-f   \
+                           --output-dir <span class="hljs-number">03.</span>Dada2Output
+<span class="hljs-comment">## Convert the denoising stats from .qza to .tsv</span>
+$ qiime tools <span class="hljs-keyword">export</span> --input-path <span class="hljs-number">03.</span>Dada2Output/denoising_stats.qza
+                     --output-path <span class="hljs-number">03.</span>Dada2Output
+<span class="hljs-comment">## See the file</span>
+nano <span class="hljs-number">03.</span>Dada2Output/stats.tsv
+<span class="hljs-comment">## Complete your summary_stats.xlsx file!!</span>
+</div></div></code></pre><h3 id="Continue-to-step-9-of-the-first-option"><a class="anchor hidden-xs" href="#Continue-to-step-9-of-the-first-option" title="Continue-to-step-9-of-the-first-option"><span class="octicon octicon-link"></span></a>Continue to step 9 of the first option.</h3><h2 id="ATTENTION"><a class="anchor hidden-xs" href="#ATTENTION" title="ATTENTION"><span class="octicon octicon-link"></span></a>ATTENTION!!!</h2><p>If you made the second option, for continue to step 9, you have to pay attention in the names of directories and files, you will have to change them</p><h2 id="Citations"><a class="anchor hidden-xs" href="#Citations" title="Citations"><span class="octicon octicon-link"></span></a>Citations</h2><ul>
+<li><strong>Qiime2:</strong> Bolyen, Evan, et al. QIIME 2: Reproducible, interactive, scalable, and extensible microbiome data science. No. e27295v1. PeerJ Preprints, 2018.</li>
+<li><strong>FASTQC:</strong> Andrews, Simon. “FastQC: a quality control tool for high throughput sequence data.” (2010).</li>
+<li><strong>Trimmomatic:</strong> Bolger, Anthony M., Marc Lohse, and Bjoern Usadel. “Trimmomatic: a flexible trimmer for Illumina sequence data.” Bioinformatics 30.15 (2014): 2114-2120.</li>
+<li><strong>Cutadapt:</strong> Martin, Marcel. “Cutadapt removes adapter sequences from high-throughput sequencing reads.” EMBnet. journal 17.1 (2011): 10-12.</li>
+<li><strong>ITSxpress:</strong> Rivers AR, Weber KC, Gardner TG et al. ITSxpress: Software to rapidly trim internally transcribed spacer sequences with quality scores for marker gene analysis [version 1; peer review: 2 approved]. F1000Research 2018, 7:1418
+(<a href="https://doi.org/10.12688/f1000research.15704.1" target="_blank" rel="noopener">https://doi.org/10.12688/f1000research.15704.1</a>)</li>
+<li><strong>DADA2:</strong> Callahan, Benjamin J., et al. “DADA2: high-resolution sample inference from Illumina amplicon data.” Nature methods 13.7 (2016): 581.</li>
+<li><strong>UNITE:</strong> Abarenkov, Kessy, et al. “The UNITE database for molecular identification of fungi–recent updates and future perspectives.” New Phytologist 186.2 (2010): 281-285.</li>
+<li><strong>SILVA:</strong> Quast, Christian, et al. “The SILVA ribosomal RNA gene database project: improved data processing and web-based tools.” Nucleic acids research 41.D1 (2012): D590-D596.</li>
+</ul></div>
+    <div class="ui-toc dropup unselectable hidden-print" style="display:none;">
+        <div class="pull-right dropdown">
+            <a id="tocLabel" class="ui-toc-label btn btn-default" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" title="Table of content">
+                <i class="fa fa-bars"></i>
+            </a>
+            <ul id="ui-toc" class="ui-toc-dropdown dropdown-menu" aria-labelledby="tocLabel">
+                <div class="toc"><ul class="nav">
+<li class=""><a href="#Analysis-fungal-ITS-amplicon-from-illumina-sequencing-by-qiime2" title="Analysis fungal ITS amplicon from illumina sequencing by qiime2">Analysis fungal ITS amplicon from illumina sequencing by qiime2</a><ul class="nav">
+<li class="invisable-node"><ul class="nav">
+<li class=""><a href="#Requirements" title="Requirements">Requirements</a></li>
+</ul>
+</li>
+<li class=""><a href="#Importants-tips-vefore-you-start" title="Importants tips vefore you start">Importants tips vefore you start</a><ul class="nav">
+<li class=""><a href="#1-Join-the-server" title="1. Join the server">1. Join the server</a></li>
+<li class=""><a href="#2-Working-Directory" title="2. Working Directory">2. Working Directory</a></li>
+</ul>
+</li>
+<li class=""><a href="#First-option-Quality-control-with-Fastqc-and-trimming-with-Trimmomatic-out-of-Qiime20" title="First option: Quality control with Fastqc and trimming with Trimmomatic (out of Qiime2)">First option: Quality control with Fastqc and trimming with Trimmomatic (out of Qiime2)</a><ul class="nav">
+<li class=""><a href="#3A-Trim-primers-with-cutadapt" title="3A. Trim primers with cutadapt">3A. Trim primers with cutadapt</a></li>
+<li class=""><a href="#4A-Inspect-read-quality" title="4A. Inspect read quality">4A. Inspect read quality</a></li>
+<li><a href="#5A-Filter-out-low-quality-reads" title="5A. Filter out low-quality reads">5A. Filter out low-quality reads</a></li>
+</ul>
+</li>
+<li><a href="#6A-Importing-the-FASTQ-files-as-artifact" title="6A. Importing the FASTQ files as artifact">6A. Importing the FASTQ files as artifact</a></li>
+<li><a href="#7A-Extracting-fungal-ITS-with-itsXpress-optional--and-only-for-fungal-analysis" title="7A. Extracting fungal ITS with itsXpress (optional- and only for fungal analysis)">7A. Extracting fungal ITS with itsXpress (optional- and only for fungal analysis)</a></li>
+<li><a href="#8A-Denoising-joining-reads-and-chimera-removing-with-DADA20" title="8A. Denoising, joining reads and chimera removing with DADA2">8A. Denoising, joining reads and chimera removing with DADA2</a></li>
+<li><a href="#9-Download-and-fit-the-database" title="9. Download and fit the database">9. Download and fit the database</a></li>
+<li><a href="#10-Assign-taxonomy-to-ASVs0" title="10. Assign taxonomy to ASVs">10. Assign taxonomy to ASVs</a></li>
+<li><a href="#BONUS-FOR-16S-analysis" title="BONUS (FOR 16S analysis)">BONUS (FOR 16S analysis)</a><ul class="nav">
+<li><a href="#Build-tree-with-FastTree-and-MAFFT-qiime2-plugins" title="Build tree with FastTree and MAFFT qiime2 plugins">Build tree with FastTree and MAFFT qiime2 plugins</a></li>
+</ul>
+</li>
+<li><a href="#11-Barplot" title="11. Barplot">11. Barplot</a></li>
+<li><a href="#12-Rarefaction-curves" title="12. Rarefaction curves">12. Rarefaction curves</a></li>
+<li><a href="#13-Alpha-and-Beta-diversity-analysis" title="13. Alpha and Beta diversity analysis">13. Alpha and Beta diversity analysis</a></li>
+<li><a href="#14-Exporting" title="14. Exporting">14. Exporting</a></li>
+</ul>
+</li>
+<li class=""><a href="#Final-summary_statsxlsx" title="Final summary_stats.xlsx">Final summary_stats.xlsx</a><ul class="nav">
+<li><a href="#Second-option-Quality-control-and-trimming-with-Qiime2-plugins" title="Second option: Quality control and trimming with Qiime2 plugins">Second option: Quality control and trimming with Qiime2 plugins</a></li>
+<li><a href="#2B-Importing-the-FASTQ-files-as-artifact" title="2B. Importing the FASTQ files as artifact">2B. Importing the FASTQ files as artifact</a></li>
+<li><a href="#3B-Trim-primers-with-cutadapt-qiime2-plugin" title="3B. Trim primers with cutadapt qiime2 plugin">3B. Trim primers with cutadapt qiime2 plugin</a></li>
+<li><a href="#4B-Extracting-fungal-ITS-with-itsXpress-optional--and-only-for-fungal-analysis" title="4B. Extracting fungal ITS with itsXpress (optional- and only for fungal analysis)">4B. Extracting fungal ITS with itsXpress (optional- and only for fungal analysis)</a></li>
+<li class=""><a href="#5B-Quality-contol-filtering-Denoising-joining-reads-and-chimera-removing-with-DADA2" title="5B. Quality contol, filtering, Denoising, joining reads and chimera removing with DADA2">5B. Quality contol, filtering, Denoising, joining reads and chimera removing with DADA2</a><ul class="nav">
+<li><a href="#Continue-to-step-9-of-the-first-option" title="Continue to step 9 of the first option.">Continue to step 9 of the first option.</a></li>
+</ul>
+</li>
+<li><a href="#ATTENTION" title="ATTENTION!!!">ATTENTION!!!</a></li>
+<li class=""><a href="#Citations" title="Citations">Citations</a></li>
+</ul>
+</li>
+</ul>
+</div><div class="toc-menu"><a class="expand-toggle" href="#">Expand all</a><a class="back-to-top" href="#">Back to top</a><a class="go-to-bottom" href="#">Go to bottom</a></div>
+            </ul>
+        </div>
+    </div>
+    <div id="ui-toc-affix" class="ui-affix-toc ui-toc-dropdown unselectable hidden-print" data-spy="affix" style="top:17px;display:none;" null null>
+        <div class="toc"><ul class="nav">
+<li class=""><a href="#Analysis-fungal-ITS-amplicon-from-illumina-sequencing-by-qiime2" title="Analysis fungal ITS amplicon from illumina sequencing by qiime2">Analysis fungal ITS amplicon from illumina sequencing by qiime2</a><ul class="nav">
+<li class="invisable-node"><ul class="nav">
+<li class=""><a href="#Requirements" title="Requirements">Requirements</a></li>
+</ul>
+</li>
+<li class=""><a href="#Importants-tips-vefore-you-start" title="Importants tips vefore you start">Importants tips vefore you start</a><ul class="nav">
+<li class=""><a href="#1-Join-the-server" title="1. Join the server">1. Join the server</a></li>
+<li class=""><a href="#2-Working-Directory" title="2. Working Directory">2. Working Directory</a></li>
+</ul>
+</li>
+<li class=""><a href="#First-option-Quality-control-with-Fastqc-and-trimming-with-Trimmomatic-out-of-Qiime20" title="First option: Quality control with Fastqc and trimming with Trimmomatic (out of Qiime2)">First option: Quality control with Fastqc and trimming with Trimmomatic (out of Qiime2)</a><ul class="nav">
+<li class=""><a href="#3A-Trim-primers-with-cutadapt" title="3A. Trim primers with cutadapt">3A. Trim primers with cutadapt</a></li>
+<li class=""><a href="#4A-Inspect-read-quality" title="4A. Inspect read quality">4A. Inspect read quality</a></li>
+<li><a href="#5A-Filter-out-low-quality-reads" title="5A. Filter out low-quality reads">5A. Filter out low-quality reads</a></li>
+</ul>
+</li>
+<li><a href="#6A-Importing-the-FASTQ-files-as-artifact" title="6A. Importing the FASTQ files as artifact">6A. Importing the FASTQ files as artifact</a></li>
+<li><a href="#7A-Extracting-fungal-ITS-with-itsXpress-optional--and-only-for-fungal-analysis" title="7A. Extracting fungal ITS with itsXpress (optional- and only for fungal analysis)">7A. Extracting fungal ITS with itsXpress (optional- and only for fungal analysis)</a></li>
+<li><a href="#8A-Denoising-joining-reads-and-chimera-removing-with-DADA20" title="8A. Denoising, joining reads and chimera removing with DADA2">8A. Denoising, joining reads and chimera removing with DADA2</a></li>
+<li><a href="#9-Download-and-fit-the-database" title="9. Download and fit the database">9. Download and fit the database</a></li>
+<li><a href="#10-Assign-taxonomy-to-ASVs0" title="10. Assign taxonomy to ASVs">10. Assign taxonomy to ASVs</a></li>
+<li><a href="#BONUS-FOR-16S-analysis" title="BONUS (FOR 16S analysis)">BONUS (FOR 16S analysis)</a><ul class="nav">
+<li><a href="#Build-tree-with-FastTree-and-MAFFT-qiime2-plugins" title="Build tree with FastTree and MAFFT qiime2 plugins">Build tree with FastTree and MAFFT qiime2 plugins</a></li>
+</ul>
+</li>
+<li><a href="#11-Barplot" title="11. Barplot">11. Barplot</a></li>
+<li><a href="#12-Rarefaction-curves" title="12. Rarefaction curves">12. Rarefaction curves</a></li>
+<li><a href="#13-Alpha-and-Beta-diversity-analysis" title="13. Alpha and Beta diversity analysis">13. Alpha and Beta diversity analysis</a></li>
+<li><a href="#14-Exporting" title="14. Exporting">14. Exporting</a></li>
+</ul>
+</li>
+<li class=""><a href="#Final-summary_statsxlsx" title="Final summary_stats.xlsx">Final summary_stats.xlsx</a><ul class="nav">
+<li><a href="#Second-option-Quality-control-and-trimming-with-Qiime2-plugins" title="Second option: Quality control and trimming with Qiime2 plugins">Second option: Quality control and trimming with Qiime2 plugins</a></li>
+<li><a href="#2B-Importing-the-FASTQ-files-as-artifact" title="2B. Importing the FASTQ files as artifact">2B. Importing the FASTQ files as artifact</a></li>
+<li><a href="#3B-Trim-primers-with-cutadapt-qiime2-plugin" title="3B. Trim primers with cutadapt qiime2 plugin">3B. Trim primers with cutadapt qiime2 plugin</a></li>
+<li class=""><a href="#4B-Extracting-fungal-ITS-with-itsXpress-optional--and-only-for-fungal-analysis" title="4B. Extracting fungal ITS with itsXpress (optional- and only for fungal analysis)">4B. Extracting fungal ITS with itsXpress (optional- and only for fungal analysis)</a></li>
+<li class=""><a href="#5B-Quality-contol-filtering-Denoising-joining-reads-and-chimera-removing-with-DADA2" title="5B. Quality contol, filtering, Denoising, joining reads and chimera removing with DADA2">5B. Quality contol, filtering, Denoising, joining reads and chimera removing with DADA2</a><ul class="nav">
+<li><a href="#Continue-to-step-9-of-the-first-option" title="Continue to step 9 of the first option.">Continue to step 9 of the first option.</a></li>
+</ul>
+</li>
+<li><a href="#ATTENTION" title="ATTENTION!!!">ATTENTION!!!</a></li>
+<li class=""><a href="#Citations" title="Citations">Citations</a></li>
+</ul>
+</li>
+</ul>
+</div><div class="toc-menu"><a class="expand-toggle" href="#">Expand all</a><a class="back-to-top" href="#">Back to top</a><a class="go-to-bottom" href="#">Go to bottom</a></div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gist-embed/2.6.0/gist-embed.min.js" integrity="sha256-KyF2D6xPIJUW5sUDSs93vWyZm+1RzIpKCexxElmxl8g=" crossorigin="anonymous" defer></script>
+    <script>
+        var markdown = $(".markdown-body");
+        //smooth all hash trigger scrolling
+        function smoothHashScroll() {
+            var hashElements = $("a[href^='#']").toArray();
+            for (var i = 0; i < hashElements.length; i++) {
+                var element = hashElements[i];
+                var $element = $(element);
+                var hash = element.hash;
+                if (hash) {
+                    $element.on('click', function (e) {
+                        // store hash
+                        var hash = this.hash;
+                        if ($(hash).length <= 0) return;
+                        // prevent default anchor click behavior
+                        e.preventDefault();
+                        // animate
+                        $('body, html').stop(true, true).animate({
+                            scrollTop: $(hash).offset().top
+                        }, 100, "linear", function () {
+                            // when done, add hash to url
+                            // (default click behaviour)
+                            window.location.hash = hash;
+                        });
+                    });
+                }
+            }
+        }
+
+        smoothHashScroll();
+        var toc = $('.ui-toc');
+        var tocAffix = $('.ui-affix-toc');
+        var tocDropdown = $('.ui-toc-dropdown');
+        //toc
+        tocDropdown.click(function (e) {
+            e.stopPropagation();
+        });
+
+        var enoughForAffixToc = true;
+
+        function generateScrollspy() {
+            $(document.body).scrollspy({
+                target: ''
+            });
+            $(document.body).scrollspy('refresh');
+            if (enoughForAffixToc) {
+                toc.hide();
+                tocAffix.show();
+            } else {
+                tocAffix.hide();
+                toc.show();
+            }
+            $(document.body).scroll();
+        }
+
+        function windowResize() {
+            //toc right
+            var paddingRight = parseFloat(markdown.css('padding-right'));
+            var right = ($(window).width() - (markdown.offset().left + markdown.outerWidth() - paddingRight));
+            toc.css('right', right + 'px');
+            //affix toc left
+            var newbool;
+            var rightMargin = (markdown.parent().outerWidth() - markdown.outerWidth()) / 2;
+            //for ipad or wider device
+            if (rightMargin >= 133) {
+                newbool = true;
+                var affixLeftMargin = (tocAffix.outerWidth() - tocAffix.width()) / 2;
+                var left = markdown.offset().left + markdown.outerWidth() - affixLeftMargin;
+                tocAffix.css('left', left + 'px');
+            } else {
+                newbool = false;
+            }
+            if (newbool != enoughForAffixToc) {
+                enoughForAffixToc = newbool;
+                generateScrollspy();
+            }
+        }
+        $(window).resize(function () {
+            windowResize();
+        });
+        $(document).ready(function () {
+            windowResize();
+            generateScrollspy();
+        });
+
+        //remove hash
+        function removeHash() {
+            window.location.hash = '';
+        }
+
+        var backtotop = $('.back-to-top');
+        var gotobottom = $('.go-to-bottom');
+
+        backtotop.click(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (scrollToTop)
+                scrollToTop();
+            removeHash();
+        });
+        gotobottom.click(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (scrollToBottom)
+                scrollToBottom();
+            removeHash();
+        });
+
+        var toggle = $('.expand-toggle');
+        var tocExpand = false;
+
+        checkExpandToggle();
+        toggle.click(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            tocExpand = !tocExpand;
+            checkExpandToggle();
+        })
+
+        function checkExpandToggle () {
+            var toc = $('.ui-toc-dropdown .toc');
+            var toggle = $('.expand-toggle');
+            if (!tocExpand) {
+                toc.removeClass('expand');
+                toggle.text('Expand all');
+            } else {
+                toc.addClass('expand');
+                toggle.text('Collapse all');
+            }
+        }
+
+        function scrollToTop() {
+            $('body, html').stop(true, true).animate({
+                scrollTop: 0
+            }, 100, "linear");
+        }
+
+        function scrollToBottom() {
+            $('body, html').stop(true, true).animate({
+                scrollTop: $(document.body)[0].scrollHeight
+            }, 100, "linear");
+        }
+    </script>
+</body>
+
+</html>
