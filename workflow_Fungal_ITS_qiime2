@@ -88,6 +88,13 @@ conda activate qiime2-2019.4
 mkdir 01.PrimersTrim
 ```
 The below primers correspond to the fungal ITS2 region
+
+-g GCATCGATGAAGAACGCAGC \
+-G TCCTCCGCTTATTGATATGC \
+
+You have to run the next command for each sample
+
+The below primers correspond to the fungal ITS2 region
   'cutadapt \
     --pair-filter any \
     --no-indels \
